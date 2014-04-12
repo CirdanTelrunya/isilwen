@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+
 class TreeNode(object):
 
     def __init__(self, name='', parent=None):
@@ -10,16 +11,17 @@ class TreeNode(object):
         self._parent = parent
         self._children = []
 
+    @property
     def name(self):
         return self._name
-
-    def set_name(self, name='Untitled'):
+    @name.setter
+    def name(self, name='Untitled'):
         self._name = name
-
+    @property
     def parent(self):
         return self._parent
-
-    def set_parent(self, parent):
+    @parent.setter
+    def parent(self, parent):
         self._parent = parent
 
     def child(self, row):
@@ -39,13 +41,13 @@ class TreeNode(object):
             self._children.pop()
         else:
             self._children.pop(row)
-
+    @property
     def children(self):
         return self._children
 
     def child_count(self):
         return len(self._children)
-    
+
     def row(self):
         if self._parent:
             return self._parent._children.index(self)
@@ -59,6 +61,7 @@ class TreeNode(object):
 if __name__ == '__main__':
     test = TreeNode()
     test.insert_child(TreeNode('pop'))
+    test.name = 'Plop'
     print test.child(0)
     print test.child(0).row()
-    
+    print test.name

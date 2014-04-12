@@ -4,7 +4,6 @@
 from PyQt4 import QtGui, QtCore
 from TreeNode import TreeNode
 import pickle
-import string
 
 class TreeNodeItemModel(QtCore.QAbstractItemModel):
 
@@ -14,10 +13,9 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         self._rootNode = TreeNode('Tree')
         if rootNode is None:
             self._rootNode.insert_child(TreeNode(name='Untitled',
-                    parent=rootNode))
+                                                 parent=rootNode))
         else:
             self._rootNode.insert_child(rootNode)
-
 
     def columnCount(self, index):
         return 1
@@ -28,14 +26,14 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         if role != QtCore.Qt.DisplayRole:
             return None
         node = self.getNode(index)
-        return QtCore.QString(node.name())
+        return QtCore.QString(node.name)
 
     def dropMimeData(self, mimedata, action, row, column, parent):
         if not parent.isValid():
             return False
         node = self.getNode(parent)
         newNode = pickle.loads(str(mimedata.text()))
-        
+
         if action != QtCore.Qt.MoveAction:
             return False
 
@@ -48,7 +46,7 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         defaultFlags = QtCore.QAbstractItemModel.flags(self, index)
         if index.isValid():
             return QtCore.Qt.ItemIsDragEnabled | \
-                    QtCore.Qt.ItemIsDropEnabled | defaultFlags
+                QtCore.Qt.ItemIsDropEnabled | defaultFlags
         else:
             return QtCore.Qt.ItemIsDropEnabled | defaultFlags
 
@@ -62,13 +60,13 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
     def headerData(self, section, orientation, role):
         if orientation == QtCore.Qt.Horizontal \
            and role == QtCore.Qt.DisplayRole:
-            return self._rootNode.name()
+            return self._rootNode.name
         return None
 
     def index(self, row, column, parent):
         if not self.hasIndex(row, column, parent):
             return QtCore.QModelIndex()
-        
+
         parentNode = self.getNode(parent)
         childNode = parentNode.child(row)
         if childNode:
@@ -76,12 +74,12 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         else:
             return QtCore.QModelIndex()
 
-    def insertNode(self, parent, node, row = None):
+    def insertNode(self, parent, node, row=None):
         if not parent.isValid():
             return False
         parentNode = self.getNode(parent)
 
-        if row is None or row < 0 :
+        if row is None or row < 0:
             row = parentNode.child_count()
         # Insert the Node
         self.beginInsertRows(parent, row, row)
@@ -99,18 +97,18 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         data = pickle.dumps(node)
         mimeData = QtCore.QMimeData()
         mimeData.setText(data)
-        return mimeData 
+        return mimeData
 
     def parent(self, index):
         if not index.isValid():
             return QtCore.QModelIndex()
         childItem = self.getNode(index)
-        parentNode = childItem.parent()
+        parentNode = childItem.parent
         if parentNode == self._rootNode:
             return QtCore.QModelIndex()
         return self.createIndex(parentNode.row(), 0, parentNode)
 
-    def removeRows(self, row, count, parent):        
+    def removeRows(self, row, count, parent):
         if not parent.isValid():
             return False
         parentNode = self.getNode(parent)
@@ -126,13 +124,13 @@ class TreeNodeItemModel(QtCore.QAbstractItemModel):
         return parentNode.child_count()
 
     def supportedDropActions(self):
-        return QtCore.Qt.MoveAction 
+        return QtCore.Qt.MoveAction
 
 if __name__ == '__main__':
     app = QtGui.QApplication([])
     root = TreeNode('Root')
     root.insert_child(TreeNode('Plup'))
-    
+
     model = TreeNodeItemModel(root)
     dialog = QtGui.QDialog()
     dialog.setMinimumSize(300, 150)
@@ -142,8 +140,7 @@ if __name__ == '__main__':
     tv.dragEnabled()
     tv.acceptDrops()
     tv.showDropIndicator()
-    tv.setDragDropMode(QtGui.QAbstractItemView.InternalMove) 
-    
+    tv.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
 
     layout.addWidget(tv)
     index = model.index(0, 0, QtCore.QModelIndex())
