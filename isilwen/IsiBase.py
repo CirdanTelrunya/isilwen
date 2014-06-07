@@ -72,7 +72,7 @@ class IsiBase(TreeNode):
         """Never record self and children if deleted"""
         odict = self.__dict__.copy()
         for child in self._children:
-            if child.is_deleted():
+            if child.is_deleted:
                 odict["_children"].remove(child)
         return odict
 
@@ -107,7 +107,23 @@ class IsiBaseModel(TreeNodeItemModel):
             return 'Project View'
         return None
 
-class IsiBaseCtlContainer(QtCore.QObject):
+class IsiBaseCtl(QtCore.QObject):
+    """"""
+    def __init__(self, parent=None):
+        """"""
+        super(IsiBaseCtl, self).__init__(parent)
+        self._node = None
+
+    @property
+    def node(self):
+        """"""
+        return self._node
+    @node.setter
+    def node(self, node):
+        """"""
+        self._node = node
+
+class IsiBaseCtlContainer(IsiBaseCtl):
     """"""
     def __init__(self, parent=None):
         """"""

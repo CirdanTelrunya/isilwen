@@ -30,6 +30,7 @@ class IsiTreeView(QtGui.QTreeView):
         node = indices[0].internalPointer()
         if node.type in self._controllers:
             ctl = self._controllers[node.type]
+            ctl.node = node
             if isinstance(ctl, IsiBaseCtlContainer):
                 ctl.model = self.model()
                 ctl.index = indices[0]
